@@ -25,13 +25,13 @@ if (!$validUser) {
     exit;
 }
 
-// ---------- Действия ----------
+// ---------- Переменные ----------
 $message = '';
 $editMode = false;
 $editData = [];
 $errors = [];
 
-// Удаление
+// Удаление записи
 if (isset($_GET['delete'])) {
     $id = (int)$_GET['delete'];
     try {
@@ -47,7 +47,7 @@ if (isset($_GET['delete'])) {
     }
 }
 
-// Редактирование: загрузка данных в форму
+// Загрузка формы редактирования
 if (isset($_GET['edit'])) {
     $editId = (int)$_GET['edit'];
     $app = loadApplication($pdo, $editId);
@@ -57,7 +57,7 @@ if (isset($_GET['edit'])) {
     }
 }
 
-// Сохранение изменений
+// Сохранение отредактированной записи
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_id'])) {
     if (!checkCsrfToken($_POST['csrf_token'] ?? '')) {
         die('Неверный CSRF-токен.');
@@ -222,7 +222,7 @@ $stats = $stmtStats->fetchAll();
                 <td><?= h($app['birth_date']) ?></td>
                 <td><?= $app['gender'] === 'male' ? 'М' : 'Ж' ?></td>
                 <td><?= h($app['langs'] ?? '') ?></td>
-                <td><?= h(mb_strlen($app['biography'] ?? '') > 50 ? mb_substr($app['biography'], 0, 50) . '…' : ($app['biography'] ?? '')) ?></td>
+                <td><?= h(strlen($app['biography'] ?? '') > 50 ? substr($app['biography'], 0, 50) . '…' : ($app['biography'] ?? '')) ?></td>
                 <td><?= $app['contract_agreed'] ? 'Да' : 'Нет' ?></td>
                 <td>
                     <a href="?edit=<?= $app['id'] ?>">Редактировать</a><br>
