@@ -1586,3 +1586,35 @@ button:hover {
     vertical-align: middle;
     cursor: pointer;
 }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    border: 2px solid #6c63ff; 
+}
+table th,
+table td {
+    border: 1px solid #bbb;  
+    padding: 10px 14px;
+    text-align: left;
+    vertical-align: top;
+}
+table th {
+    background: #6c63ff;
+    color: white;
+    font-weight: 600;
+    border-color: #5a52e0;  
+}
+table tr:nth-child(even) {
+    background-color: #f9f9ff;
+}
+table a {
+    color: #e74c3c;
+    margin-right: 10px;
+}
+table a:first-child {
+    color: #6c63ff;
+}
+table a:hover {
+    text-decoration: underline;
+}
