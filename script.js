@@ -1,4 +1,3 @@
-// ==================== ВАШ ИСХОДНЫЙ КОД (без изменений) ====================
 window.onload = function () {
     //burger
     $('.burger_menu').on('click', function(){
@@ -6,7 +5,6 @@ window.onload = function () {
     });
 
     // for partners
-    // сликер для двух полосок картинок, причем они не должны листаться синхронно + они листаются автоматически
     let setTimer;
     const partners = document.querySelector('.autoplay').innerHTML;
     let start = false;
@@ -54,7 +52,6 @@ window.onload = function () {
   //
 
     // for tarifs
-    // при наведении блок увеличивается
     $('.tarif_category:not(.active)').hover(function () {
       $('.tarif_category.active').removeClass('active');
     });
@@ -64,7 +61,6 @@ window.onload = function () {
   //
 
     // for reviews
-    // для того чтобы какие-то отзывы показывались а какие-то нет + для подсчета там при пролистывании
     $(".a").css('height', $('.aa > div:eq(0)').height());
     function aa(p){
         console.log(p)
@@ -82,7 +78,6 @@ window.onload = function () {
         $('.ednum').html((p+1).toString().padStart(2, '0'))
     }
   
-    // для листалки
     p = 0, pl = $('.aa > div').length - 1;
     $('.b1').on('click', function(){
         if(p == 0) p = pl;
@@ -109,50 +104,61 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('mainForm');
     if (!form) return;
 
-    // Клиентская валидация
+    // Соответствие русских названий полей (из ответа сервера) и технических имён
+    const fieldLabels = {
+        full_name: 'ФИО',
+        phone: 'Телефон',
+        email: 'E-mail',
+        birth_date: 'Дата рождения',
+        gender: 'Пол',
+        languages: 'Языки программирования',
+        contract: 'Согласие с контрактом'
+    };
+
     function validateClient() {
         const errors = {};
         const fullName = form.full_name.value.trim();
-        if (!fullName) errors.full_name = 'Поле обязательно.';
-        else if (!/^[A-Za-zА-Яа-яЁё\s]+$/.test(fullName)) errors.full_name = 'Допустимы только буквы и пробелы.';
-        else if ([...fullName].length > 150) errors.full_name = 'Не более 150 символов.';
+        if (!fullName) errors['ФИО'] = 'Поле обязательно.';
+        else if (!/^[A-Za-zА-Яа-яЁё\s]+$/.test(fullName)) errors['ФИО'] = 'Допустимы только буквы и пробелы.';
+        else if ([...fullName].length > 150) errors['ФИО'] = 'Не более 150 символов.';
 
         const phone = form.phone.value.trim();
-        if (!phone) errors.phone = 'Поле обязательно.';
+        if (!phone) errors['Телефон'] = 'Поле обязательно.';
         else if (!/^\+?\d{1,3}[\s\-]?\(?\d{1,4}\)?[\s\-]?\d{1,4}[\s\-]?\d{1,9}$/.test(phone))
-            errors.phone = 'Некорректный формат.';
+            errors['Телефон'] = 'Некорректный формат.';
 
         const email = form.email.value.trim();
-        if (!email) errors.email = 'Поле обязательно.';
-        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = 'Некорректный адрес.';
+        if (!email) errors['E-mail'] = 'Поле обязательно.';
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors['E-mail'] = 'Некорректный адрес.';
 
-        if (!form.birth_date.value) errors.birth_date = 'Поле обязательно.';
-        if (!form.gender.value) errors.gender = 'Выберите пол.';
-        if (!form.contract_agreed.checked) errors.contract = 'Необходимо согласие.';
-        if (form.languages.selectedOptions.length === 0) errors.languages = 'Выберите язык.';
+        if (!form.birth_date.value) errors['Дата рождения'] = 'Поле обязательно.';
+        if (!form.gender.value) errors['Пол'] = 'Выберите значение.';
+        if (!form.contract_agreed.checked) errors['Согласие с контрактом'] = 'Необходимо подтвердить ознакомление.';
+        if (form.languages.selectedOptions.length === 0) errors['Языки программирования'] = 'Выберите хотя бы один язык.';
 
         return errors;
     }
 
-    // Показ ошибок
     function showErrors(errors) {
         const errBox = document.getElementById('errorBox');
         if (!errBox) return;
         let html = '<div class="error-block"><ul>';
         for (const [field, msg] of Object.entries(errors)) {
             html += `<li><strong>${field}:</strong> ${msg}</li>`;
-            // Подсвечиваем поле с ошибкой
-            const input = form.querySelector(`[name="${field}"]`) || form.querySelector(`[name="${field}[]"]`);
-            if (input) {
-                const group = input.closest('.form-group');
-                if (group) group.classList.add('error');
+            // Подсвечиваем поле по техническому имени
+            const techName = Object.keys(fieldLabels).find(key => fieldLabels[key] === field);
+            if (techName) {
+                const input = form.querySelector(`[name="${techName}"]`) || form.querySelector(`[name="${techName}[]"]`);
+                if (input) {
+                    const group = input.closest('.form-group');
+                    if (group) group.classList.add('error');
+                }
             }
         }
         html += '</ul></div>';
         errBox.innerHTML = html;
     }
 
-    // Очистка ошибок
     function clearErrors() {
         document.querySelectorAll('.form-group.error').forEach(el => el.classList.remove('error'));
         document.querySelectorAll('.error-hint').forEach(el => el.textContent = '');
@@ -160,7 +166,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (errBox) errBox.innerHTML = '';
     }
 
-    // Обработка отправки
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         const clientErrors = validateClient();
@@ -169,62 +174,99 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        const formData = new FormData(form);
-        const csrfToken = formData.get('csrf_token');
         const isAuthenticated = document.body.dataset.authenticated === 'true';
         const userId = document.body.dataset.userId;
-        let url = 'api/applications';
-        let method = 'POST';
-        if (isAuthenticated) {
-            url = 'api/applications/' + userId;
-            method = 'PUT';
-        }
+        const csrfToken = document.querySelector('input[name="csrf_token"]').value;
 
-        try {
-            const response = await fetch(url, {
-                method: method,
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json'
-                },
-                body: formData
-            });
-            const result = await response.json();
-            const msgBox = document.getElementById('messageBox');
-            const errBox = document.getElementById('errorBox');
-            if (msgBox) msgBox.innerHTML = '';
-            if (errBox) errBox.innerHTML = '';
+        if (!isAuthenticated) {
+            // POST – обычная отправка FormData
+            const formData = new FormData(form);
+            try {
+                const response = await fetch('api/applications', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                });
+                const result = await response.json();
+                const msgBox = document.getElementById('messageBox');
+                const errBox = document.getElementById('errorBox');
+                if (msgBox) msgBox.innerHTML = '';
+                if (errBox) errBox.innerHTML = '';
 
-            if (!response.ok) {
-                if (result.errors) {
-                    showErrors(result.errors);
-                } else {
-                    if (errBox) errBox.innerHTML = '<div class="error-block">' + (result.error || 'Ошибка') + '</div>';
+                if (!response.ok) {
+                    if (result.errors) showErrors(result.errors);
+                    else if (errBox) errBox.innerHTML = '<div class="error-block">' + (result.error || 'Ошибка') + '</div>';
+                    return;
                 }
-                return;
-            }
 
-            if (result.success) {
-                if (result.login) {
-                    if (msgBox) msgBox.innerHTML = `<div class="success-block">Данные сохранены!</div>
-                        <div class="message">Логин: <b>${result.login}</b>, Пароль: <b>${result.password}</b> (сохраните)<br>
-                        <a href="${result.profile_url}">Перейти в профиль</a></div>`;
-                } else {
+                if (result.success) {
+                    if (result.login) {
+                        if (msgBox) msgBox.innerHTML = `<div class="success-block">Данные сохранены!</div>
+                            <div class="message">Логин: <b>${result.login}</b>, Пароль: <b>${result.password}</b> (сохраните)<br>
+                            <a href="${result.profile_url}">Перейти в профиль</a></div>`;
+                    } else {
+                        if (msgBox) msgBox.innerHTML = '<div class="success-block">Изменения сохранены.</div>';
+                    }
+                    clearErrors();
+                }
+            } catch (error) {
+                const errBox = document.getElementById('errorBox');
+                if (errBox) errBox.innerHTML = '<div class="error-block">Сетевая ошибка.</div>';
+            }
+        } else {
+            // PUT – отправка JSON
+            const data = {
+                full_name: form.full_name.value.trim(),
+                phone: form.phone.value.trim(),
+                email: form.email.value.trim(),
+                birth_date: form.birth_date.value,
+                gender: form.gender.value,
+                languages: Array.from(form.languages.selectedOptions).map(opt => opt.value),
+                biography: form.biography.value.trim(),
+                contract_agreed: form.contract_agreed.checked ? '1' : '0'
+            };
+
+            try {
+                const response = await fetch(`api/applications/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                const msgBox = document.getElementById('messageBox');
+                const errBox = document.getElementById('errorBox');
+                if (msgBox) msgBox.innerHTML = '';
+                if (errBox) errBox.innerHTML = '';
+
+                if (!response.ok) {
+                    if (result.errors) showErrors(result.errors);
+                    else if (errBox) errBox.innerHTML = '<div class="error-block">' + (result.error || 'Ошибка') + '</div>';
+                    return;
+                }
+
+                if (result.success) {
                     if (msgBox) msgBox.innerHTML = '<div class="success-block">Изменения сохранены.</div>';
+                    clearErrors();
                 }
-                clearErrors();
+            } catch (error) {
+                const errBox = document.getElementById('errorBox');
+                if (errBox) errBox.innerHTML = '<div class="error-block">Сетевая ошибка.</div>';
             }
-        } catch (error) {
-            const errBox = document.getElementById('errorBox');
-            if (errBox) errBox.innerHTML = '<div class="error-block">Сетевая ошибка.</div>';
         }
     });
 
-    // Очистка ошибок при изменении полей (опционально)
+    // Очистка ошибок при изменении полей
     form.addEventListener('input', function(e) {
         if (e.target.closest('.form-group')) {
             e.target.closest('.form-group').classList.remove('error');
-            const hint = e.target.closest('.form-group').querySelector('.error-hint');
+            const hint = e.target.closest('.form-group')?.querySelector('.error-hint');
             if (hint) hint.textContent = '';
         }
     });

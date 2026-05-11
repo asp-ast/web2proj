@@ -42,48 +42,48 @@ function validate(array $data): array {
     $errors = [];
     $full_name = $data['full_name'] ?? '';
     if ($full_name === '') {
-        $errors['full_name'] = 'Поле обязательно.';
+        $errors['ФИО'] = 'Поле обязательно.';
     } elseif (!preg_match('/^[A-Za-zА-Яа-яЁё\s]+$/u', $full_name)) {
-        $errors['full_name'] = 'Допустимы только буквы и пробелы.';
+        $errors['ФИО'] = 'Допустимы только буквы и пробелы.';
     } elseif (preg_match_all('/./u', $full_name) > 150) {
-        $errors['full_name'] = 'Не более 150 символов.';
+        $errors['ФИО'] = 'Не более 150 символов.';
     }
     $phone = $data['phone'] ?? '';
     if ($phone === '') {
-        $errors['phone'] = 'Поле обязательно.';
+        $errors['Телефон'] = 'Поле обязательно.';
     } elseif (!preg_match('/^\+?\d{1,3}[\s\-]?\(?\d{1,4}\)?[\s\-]?\d{1,4}[\s\-]?\d{1,9}$/', $phone)) {
-        $errors['phone'] = 'Допустимы цифры, +, дефис, скобки, пробелы.';
+        $errors['Телефон'] = 'Допустимы цифры, +, дефис, скобки, пробелы.';
     }
     $email = $data['email'] ?? '';
     if ($email === '') {
-        $errors['email'] = 'Поле обязательно.';
+        $errors['E-mail'] = 'Поле обязательно.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors['email'] = 'Некорректный адрес.';
+        $errors['E-mail'] = 'Некорректный адрес.';
     }
     $birth = $data['birth_date'] ?? '';
     if ($birth === '') {
-        $errors['birth_date'] = 'Поле обязательно.';
+        $errors['Дата рождения'] = 'Поле обязательно.';
     } elseif (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $birth)) {
-        $errors['birth_date'] = 'Формат ГГГГ-ММ-ДД.';
+        $errors['Дата рождения'] = 'Формат ГГГГ-ММ-ДД.';
     }
     $gender = $data['gender'] ?? '';
     if (!in_array($gender, ['male', 'female'])) {
-        $errors['gender'] = 'Выберите значение.';
+        $errors['Пол'] = 'Выберите значение.';
     }
     $languages = $data['languages'] ?? [];
     if (!is_array($languages) || count($languages) === 0) {
-        $errors['languages'] = 'Выберите хотя бы один язык.';
+        $errors['Языки программирования'] = 'Выберите хотя бы один язык.';
     } else {
         foreach ($languages as $lid) {
             if (!in_array((int)$lid, range(1, 12))) {
-                $errors['languages'] = 'Недопустимый язык.';
+                $errors['Языки программирования'] = 'Недопустимый язык.';
                 break;
             }
         }
     }
     $contract = $data['contract_agreed'] ?? '';
     if ($contract !== '1') {
-        $errors['contract'] = 'Необходимо подтвердить ознакомление.';
+        $errors['Согласие с контрактом'] = 'Необходимо подтвердить ознакомление.';
     }
     return $errors;
 }

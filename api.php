@@ -7,11 +7,10 @@
 session_start();
 require_once 'functions.php';
 
-// Защита от Information Disclosure
+// Защита от утечки информации
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 
-// Заголовок JSON
 header('Content-Type: application/json; charset=utf-8');
 
 $pdo = getPDO();
@@ -19,7 +18,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 $path = isset($_SERVER['PATH_INFO']) ? trim($_SERVER['PATH_INFO'], '/') : '';
 $pathParts = $path ? explode('/', $path) : [];
 
-// Проверка CSRF для методов, изменяющих данные (POST, PUT)
+// CSRF-проверка для методов, изменяющих данные
 if (in_array($method, ['POST', 'PUT'])) {
     // Токен ищем в заголовке X-CSRF-TOKEN или в теле запроса (csrf_token)
     $csrfToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? ($_POST['csrf_token'] ?? '');
@@ -33,7 +32,7 @@ if (in_array($method, ['POST', 'PUT'])) {
 try {
     // POST /api/applications — создание новой заявки (неавторизованный доступ)
     if ($method === 'POST' && $path === 'applications') {
-        // Данные могут прийти как JSON или как обычная форма
+        // Данные могут прийти как JSON или как обычная форма (для fallback)
         $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
         $errors = validate($input);
         if (!empty($errors)) {
@@ -43,7 +42,7 @@ try {
         }
         $appId = saveApplication($pdo, $input, null);
         $credentials = generateCredentials($pdo, $appId);
-        // Устанавливаем cookies для fallback (если браузер не поддерживает JS)
+        // Сохраняем успешные данные в cookies
         setcookie('saved_data', json_encode($input), time() + 31536000, '/');
         echo json_encode([
             'success'     => true,
@@ -54,7 +53,7 @@ try {
         exit;
     }
 
-    // PUT /api/applications/{id} — редактирование заявки (только после входа)
+    // PUT /api/applications/{id} — редактирование заявки (только после авторизации)
     if ($method === 'PUT' && isset($pathParts[0], $pathParts[1]) && $pathParts[0] === 'applications') {
         if (!isset($_SESSION['app_id'])) {
             http_response_code(401);
@@ -67,9 +66,14 @@ try {
             echo json_encode(['error' => 'Доступ запрещён']);
             exit;
         }
-        // Получаем данные
-        $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
-        // Исключаем логин и пароль из обновления (они не должны меняться)
+        // При PUT принимаем только JSON
+        $input = json_decode(file_get_contents('php://input'), true);
+        if (!$input) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Неверный формат данных']);
+            exit;
+        }
+        // Убираем поля, которые нельзя редактировать
         unset($input['login'], $input['password']);
         $errors = validate($input);
         if (!empty($errors)) {
