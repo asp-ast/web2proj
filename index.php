@@ -909,129 +909,134 @@ if (!$isAuthenticated) {
     </main>
 
     <!-- 12. Футер с формой анкеты -->
-    <footer id="form">
-        <div class="container">
-            <div class="form_contacts">
-                <h1><?= $isAuthenticated ? 'Редактирование анкеты' : 'Оставить заявку на поддержку сайта' ?></h1>
-                <h2>Заполните анкету, чтобы получить доступ к редактированию данных в будущем.</h2>
-                <div class="form_contact">
-                    <div class="form_phone"><a href="tel:+78002222673">8 800 222-26-73</a></div>
-                    <div class="form_mail"><a href="mailto:info@drupal-coder.ru">info@drupal-coder.ru</a></div>
-                </div>
+<footer id="form">
+    <div class="container">
+        <!-- 1. Заголовок и контакты (сверху) -->
+        <div class="form_contacts">
+            <h1><?= $isAuthenticated ? 'Редактирование анкеты' : 'Оставить заявку на поддержку сайта' ?></h1>
+            <h2>Заполните анкету, чтобы получить доступ к редактированию данных в будущем.</h2>
+            <div class="form_contact">
+                <div class="form_phone"><a href="tel:+78002222673">8 800 222-26-73</a></div>
+                <div class="form_mail"><a href="mailto:info@drupal-coder.ru">info@drupal-coder.ru</a></div>
             </div>
+        </div>
 
-            <?php if ($isAuthenticated): ?>
-                <p style="color:#fff;">Вы вошли как <strong><?= h($values['full_name'] ?? '') ?></strong>. <a href="?logout">Выйти</a></p>
-            <?php else: ?>
-                <div class="login-form">
-                    <h3>Вход для редактирования</h3>
-                    <?php if ($authError): ?><div class="error-block"><?= h($authError) ?></div><?php endif; ?>
-                    <form method="post">
-                        <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
-                        <input type="hidden" name="action" value="login">
-                        <div class="form-group"><label>Логин:</label><input type="text" name="login" required></div>
-                        <div class="form-group"><label>Пароль:</label><input type="password" name="password" required></div>
-                        <button type="submit">Войти</button>
-                    </form>
-                </div>
+        <!-- 2. Вход или приветствие (посередине) -->
+        <?php if ($isAuthenticated): ?>
+            <p style="color:#fff; margin-bottom:25px;">
+                Вы вошли как <strong><?= h($values['full_name'] ?? '') ?></strong>. <a href="?logout">Выйти</a>
+            </p>
+        <?php else: ?>
+            <div class="login-form">
+                <h3>Вход для редактирования</h3>
+                <?php if ($authError): ?><div class="error-block"><?= h($authError) ?></div><?php endif; ?>
+                <form method="post">
+                    <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
+                    <input type="hidden" name="action" value="login">
+                    <div class="form-group"><label>Логин:</label><input type="text" name="login" required></div>
+                    <div class="form-group"><label>Пароль:</label><input type="password" name="password" required></div>
+                    <button type="submit">Войти</button>
+                </form>
+            </div>
+        <?php endif; ?>
+
+        <!-- 3. Сообщения и сама анкета (внизу) -->
+        <div id="messageBox">
+            <?php if ($success && !isset($_SERVER['HTTP_X_REQUESTED_WITH'])): ?>
+                <div class="success-block">Данные успешно сохранены!</div>
+                <?php if ($message): ?><div class="message"><?= $message ?></div><?php endif; ?>
             <?php endif; ?>
-
-            <div id="messageBox">
-                <?php if ($success && !isset($_SERVER['HTTP_X_REQUESTED_WITH'])): ?>
-                    <div class="success-block">Данные успешно сохранены!</div>
-                    <?php if ($message): ?><div class="message"><?= $message ?></div><?php endif; ?>
-                <?php endif; ?>
-            </div>
-            <div id="errorBox">
-                <?php if (!empty($errors)): ?>
-                    <div class="error-block"><ul>
-                        <?php foreach ($errors as $field => $msg): ?>
-                            <li><strong><?= h($field) ?>:</strong> <?= h($msg) ?></li>
-                        <?php endforeach; ?>
-                    </ul></div>
-                <?php endif; ?>
-            </div>
-
-            <form id="mainForm" method="post" action="index.php">
-                <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
-
-                <div class="form-group <?= isset($errors['full_name']) ? 'error' : '' ?>">
-                    <label for="full_name">ФИО</label>
-                    <input type="text" id="full_name" name="full_name" value="<?= h($values['full_name'] ?? '') ?>" required placeholder="Ваше ФИО">
-                    <?php if (isset($errors['full_name'])): ?><span class="error-hint"><?= h($errors['full_name']) ?></span><?php endif; ?>
-                </div>
-
-                <div class="form-group <?= isset($errors['phone']) ? 'error' : '' ?>">
-                    <label for="phone">Телефон</label>
-                    <input type="tel" id="phone" name="phone" value="<?= h($values['phone'] ?? '') ?>" required placeholder="Телефон">
-                    <?php if (isset($errors['phone'])): ?><span class="error-hint"><?= h($errors['phone']) ?></span><?php endif; ?>
-                </div>
-
-                <div class="form-group <?= isset($errors['email']) ? 'error' : '' ?>">
-                    <label for="email">E-mail</label>
-                    <input type="email" id="email" name="email" value="<?= h($values['email'] ?? '') ?>" required placeholder="E-mail">
-                    <?php if (isset($errors['email'])): ?><span class="error-hint"><?= h($errors['email']) ?></span><?php endif; ?>
-                </div>
-
-                <div class="form-group <?= isset($errors['birth_date']) ? 'error' : '' ?>">
-                    <label for="birth_date">Дата рождения</label>
-                    <input type="date" id="birth_date" name="birth_date" value="<?= h($values['birth_date'] ?? '') ?>" required>
-                    <?php if (isset($errors['birth_date'])): ?><span class="error-hint"><?= h($errors['birth_date']) ?></span><?php endif; ?>
-                </div>
-
-                <div class="form-group <?= isset($errors['gender']) ? 'error' : '' ?>">
-                    <label>Пол</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="gender" value="male" <?= ($values['gender'] ?? '') === 'male' ? 'checked' : '' ?>> Мужской</label>
-                        <label><input type="radio" name="gender" value="female" <?= ($values['gender'] ?? '') === 'female' ? 'checked' : '' ?>> Женский</label>
-                    </div>
-                    <?php if (isset($errors['gender'])): ?><span class="error-hint"><?= h($errors['gender']) ?></span><?php endif; ?>
-                </div>
-
-                <div class="form-group <?= isset($errors['languages']) ? 'error' : '' ?>">
-                    <label for="languages">Любимый язык программирования</label>
-                    <select name="languages[]" id="languages" multiple required>
-                        <?php
-                        $langs = [1=>'Pascal',2=>'C',3=>'C++',4=>'JavaScript',5=>'PHP',6=>'Python',7=>'Java',8=>'Haskell',9=>'Clojure',10=>'Prolog',11=>'Scala',12=>'Go'];
-                        $selected = $values['languages'] ?? [];
-                        foreach ($langs as $id => $name):
-                            $sel = in_array((string)$id, array_map('strval', $selected)) ? 'selected' : '';
-                            echo "<option value=\"$id\" $sel>$name</option>";
-                        endforeach;
-                        ?>
-                    </select>
-                    <?php if (isset($errors['languages'])): ?><span class="error-hint"><?= h($errors['languages']) ?></span><?php endif; ?>
-                </div>
-
-                <div class="form-group">
-                    <label for="biography">Биография</label>
-                    <textarea id="biography" name="biography" rows="5" placeholder="Расскажите о себе"><?= h($values['biography'] ?? '') ?></textarea>
-                </div>
-
-                <div class="form-group checkbox-group <?= isset($errors['contract']) ? 'error' : '' ?>">
-                    <input type="checkbox" id="contract" name="contract_agreed" value="1" <?= ($values['contract_agreed'] ?? '') === '1' ? 'checked' : '' ?> required>
-                    <label for="contract">С контрактом ознакомлен(а)</label>
-                    <?php if (isset($errors['contract'])): ?><span class="error-hint"><?= h($errors['contract']) ?></span><?php endif; ?>
-                </div>
-
-                <button type="submit">Сохранить</button>
-            </form>
+        </div>
+        <div id="errorBox">
+            <?php if (!empty($errors)): ?>
+                <div class="error-block"><ul>
+                    <?php foreach ($errors as $field => $msg): ?>
+                        <li><strong><?= h($field) ?>:</strong> <?= h($msg) ?></li>
+                    <?php endforeach; ?>
+                </ul></div>
+            <?php endif; ?>
         </div>
 
-        <div class="razdel"></div>
-        <div class="container">
-            <div class="socials">
-                <a class="social"><i class="fab fa-vk"></i></a>
-                <a class="social"><i class="fab fa-telegram-plane"></i></a>
-                <a class="social"><i class="fab fa-youtube"></i></a>
-                <a class="social"><div class="social_fb">ФБ</div></a>
+        <form id="mainForm" method="post" action="index.php">
+            <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
+
+            <div class="form-group <?= isset($errors['full_name']) ? 'error' : '' ?>">
+                <label for="full_name">ФИО</label>
+                <input type="text" id="full_name" name="full_name" value="<?= h($values['full_name'] ?? '') ?>" required placeholder="Ваше ФИО">
+                <?php if (isset($errors['full_name'])): ?><span class="error-hint"><?= h($errors['full_name']) ?></span><?php endif; ?>
             </div>
-            <div class="footer_end">
-                ООО «Инитлаб», Краснодар, Россия.<br>
-                Drupal является зарегистрированной торговой маркой Dries Buytaert.
+
+            <div class="form-group <?= isset($errors['phone']) ? 'error' : '' ?>">
+                <label for="phone">Телефон</label>
+                <input type="tel" id="phone" name="phone" value="<?= h($values['phone'] ?? '') ?>" required placeholder="Телефон">
+                <?php if (isset($errors['phone'])): ?><span class="error-hint"><?= h($errors['phone']) ?></span><?php endif; ?>
             </div>
+
+            <div class="form-group <?= isset($errors['email']) ? 'error' : '' ?>">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" value="<?= h($values['email'] ?? '') ?>" required placeholder="E-mail">
+                <?php if (isset($errors['email'])): ?><span class="error-hint"><?= h($errors['email']) ?></span><?php endif; ?>
+            </div>
+
+            <div class="form-group <?= isset($errors['birth_date']) ? 'error' : '' ?>">
+                <label for="birth_date">Дата рождения</label>
+                <input type="date" id="birth_date" name="birth_date" value="<?= h($values['birth_date'] ?? '') ?>" required>
+                <?php if (isset($errors['birth_date'])): ?><span class="error-hint"><?= h($errors['birth_date']) ?></span><?php endif; ?>
+            </div>
+
+            <div class="form-group <?= isset($errors['gender']) ? 'error' : '' ?>">
+                <label>Пол</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="gender" value="male" <?= ($values['gender'] ?? '') === 'male' ? 'checked' : '' ?>> Мужской</label>
+                    <label><input type="radio" name="gender" value="female" <?= ($values['gender'] ?? '') === 'female' ? 'checked' : '' ?>> Женский</label>
+                </div>
+                <?php if (isset($errors['gender'])): ?><span class="error-hint"><?= h($errors['gender']) ?></span><?php endif; ?>
+            </div>
+
+            <div class="form-group <?= isset($errors['languages']) ? 'error' : '' ?>">
+                <label for="languages">Любимый язык программирования</label>
+                <select name="languages[]" id="languages" multiple required>
+                    <?php
+                    $langs = [1=>'Pascal',2=>'C',3=>'C++',4=>'JavaScript',5=>'PHP',6=>'Python',7=>'Java',8=>'Haskell',9=>'Clojure',10=>'Prolog',11=>'Scala',12=>'Go'];
+                    $selected = $values['languages'] ?? [];
+                    foreach ($langs as $id => $name):
+                        $sel = in_array((string)$id, array_map('strval', $selected)) ? 'selected' : '';
+                        echo "<option value=\"$id\" $sel>$name</option>";
+                    endforeach;
+                    ?>
+                </select>
+                <?php if (isset($errors['languages'])): ?><span class="error-hint"><?= h($errors['languages']) ?></span><?php endif; ?>
+            </div>
+
+            <div class="form-group">
+                <label for="biography">Биография</label>
+                <textarea id="biography" name="biography" rows="5" placeholder="Расскажите о себе"><?= h($values['biography'] ?? '') ?></textarea>
+            </div>
+
+            <div class="form-group checkbox-group <?= isset($errors['contract']) ? 'error' : '' ?>">
+                <input type="checkbox" id="contract" name="contract_agreed" value="1" <?= ($values['contract_agreed'] ?? '') === '1' ? 'checked' : '' ?> required>
+                <label for="contract">С контрактом ознакомлен(а)</label>
+                <?php if (isset($errors['contract'])): ?><span class="error-hint"><?= h($errors['contract']) ?></span><?php endif; ?>
+            </div>
+
+            <button type="submit">Сохранить</button>
+        </form>
+    </div>
+
+    <div class="razdel"></div>
+    <div class="container">
+        <div class="socials">
+            <a class="social"><i class="fab fa-vk"></i></a>
+            <a class="social"><i class="fab fa-telegram-plane"></i></a>
+            <a class="social"><i class="fab fa-youtube"></i></a>
+            <a class="social"><div class="social_fb">ФБ</div></a>
         </div>
-    </footer>
+        <div class="footer_end">
+            ООО «Инитлаб», Краснодар, Россия.<br>
+            Drupal является зарегистрированной торговой маркой Dries Buytaert.
+        </div>
+    </div>
+</footer>
 
     <script src="script.js"></script>
 </body>
