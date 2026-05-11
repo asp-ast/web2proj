@@ -11,7 +11,7 @@ function getPDO(): PDO {
     if ($pdo === null) {
         $db_host = 'localhost';
         $db_user = 'u82674';
-        $db_pass = '7581119'; // ← замените на ваш пароль от MySQL
+        $db_pass = '7581119'; 
         $db_name = 'u82674';
         try {
             $pdo = new PDO(
