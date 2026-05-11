@@ -1579,3 +1579,10 @@ button:hover {
 #form .login-form {
     margin-bottom: 30px;
 }
+.form-group.checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    vertical-align: middle;
+    cursor: pointer;
+}
