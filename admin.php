@@ -117,7 +117,7 @@ $stats = $stmtStats->fetchAll();
 <head>
     <meta charset="UTF-8">
     <title>Админ-панель – u82674</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
