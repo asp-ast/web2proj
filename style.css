@@ -1630,6 +1630,7 @@ table a:hover {
 form input[type="text"],
 form input[type="email"],
 form input[type="date"],
+form [method="post"],
 form textarea,
 form select {
     background: #fff;
