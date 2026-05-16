@@ -119,8 +119,8 @@ if (!$isAuthenticated) {
     <link rel="stylesheet" href="libs/bootstrap-4.0.0-dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="libs/slick/slick/slick.css"/>
     <link rel="stylesheet" type="text/css" href="libs/slick/slick/slick-theme.css"/>
-    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
     <script src="libs/jquery-3.4.1.min.js"></script>
     <script src="libs/bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="libs/slick/slick/slick.min.js"></script>

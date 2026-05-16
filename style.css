@@ -1644,3 +1644,26 @@ form select:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(108,99,255,0.2);
 }
+.login-form input[type="text"],
+.login-form input[type="password"] {
+    background: #ffffff !important;
+    color: #333333 !important;
+    border: 1px solid #cccccc !important;
+}
+body .container form input[type="text"],
+body .container form input[type="email"],
+body .container form input[type="date"],
+body .container form textarea,
+body .container form select {
+    background: #ffffff !important;
+    color: #333333 !important;
+    border: 1px solid #cccccc !important;
+}
+
+body .container form input:focus,
+body .container form textarea:focus,
+body .container form select:focus {
+    border-color: #6c63ff !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(108,99,255,0.2) !important;
+}
