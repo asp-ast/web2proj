@@ -1618,3 +1618,28 @@ table a:first-child {
 table a:hover {
     text-decoration: underline;
 }
+.login-form input[type="text"],
+.login-form input[type="password"] {
+    background: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+}
+.login-form input:focus {
+    border-color: #F14D34;
+}
+form input[type="text"],
+form input[type="email"],
+form input[type="date"],
+form textarea,
+form select {
+    background: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+}
+form input:focus,
+form textarea:focus,
+form select:focus {
+    border-color: #6c63ff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(108,99,255,0.2);
+}
