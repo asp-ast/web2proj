@@ -1,9 +1,9 @@
 <?php
 require_once 'functions.php';
+session_start();
 
 $pdo = getPDO();
 
-// ---------- HTTP Basic Auth ----------
 $validUser = null;
 if (isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW'])) {
     $login = $_SERVER['PHP_AUTH_USER'];
